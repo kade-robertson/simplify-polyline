@@ -1,9 +1,13 @@
 [package]
 name = "simplify-polyline"
 version = "0.1.0"
+description = "Simplify polylines using Douglas-Peucker and radial distance algorithms. Port of the simplify-js library."
+homepage = "https://github.com/kade-robertson/simplify-polyline"
+repository = "https://github.com/kade-robertson/simplify-polyline"
+license = "MIT"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+keywords = ["simplify", "polyline", "geometry", "simplify-js"]
+categories = ["mathematics", "graphics"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"], optional = true }
