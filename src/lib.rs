@@ -4,6 +4,20 @@ pub struct Point {
     pub y: f64,
 }
 
+#[macro_export]
+macro_rules! point {
+    ($x:expr,$y:expr) => {
+        Point { x: $x, y: $y }
+    };
+}
+
+#[macro_export]
+macro_rules! points {
+    ($(($x:expr,$y:expr)),*) => {
+        &[$(point!($x,$y)),*]
+    };
+}
+
 fn get_sq_dist(p1: &Point, p2: &Point) -> f64 {
     let dx = p2.x - p1.x;
     let dy = p2.y - p1.y;
