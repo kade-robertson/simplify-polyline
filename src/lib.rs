@@ -1,4 +1,8 @@
+#[cfg(feature = "tests")]
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Copy, PartialEq, Debug)]
+#[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
 pub struct Point {
     pub x: f64,
     pub y: f64,
