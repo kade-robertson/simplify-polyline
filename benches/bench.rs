@@ -5,13 +5,23 @@ use simplify_polyline::{simplify, Point};
 use test::Bencher;
 
 #[bench]
-fn simplify_hq(b: &mut Bencher) {
+fn simplify_hq_1118_pts(b: &mut Bencher) {
     b.iter(|| simplify(BENCH_FIXTURE, 1.0, true));
 }
 
 #[bench]
-fn simplify_lq(b: &mut Bencher) {
+fn simplify_lq_1118_pts(b: &mut Bencher) {
     b.iter(|| simplify(BENCH_FIXTURE, 1.0, false));
+}
+
+#[bench]
+fn simplify_hq_1118_pts_tol5(b: &mut Bencher) {
+    b.iter(|| simplify(BENCH_FIXTURE, 5.0, true));
+}
+
+#[bench]
+fn simplify_lq_1118_pts_tol5(b: &mut Bencher) {
+    b.iter(|| simplify(BENCH_FIXTURE, 5.0, false));
 }
 
 pub const BENCH_FIXTURE: &[Point] = &[
