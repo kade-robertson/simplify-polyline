@@ -549,7 +549,7 @@ fn returns_empty_vec_if_one_point() {
 }
 
 #[test]
-fn simplify_matches_expected_output() {
+fn matches_expected_output() {
     let result = simplify(INPUT, 5.0, false);
 
     // assert_eq!(result, EXPECTED_OUTPUT);
