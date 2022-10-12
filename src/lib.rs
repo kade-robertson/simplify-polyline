@@ -1,44 +1,51 @@
+use traits::ExtendedNumOps;
+
 #[cfg(feature = "tests")]
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+mod traits;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
-pub struct Point {
-    pub x: f64,
-    pub y: f64,
+pub struct Point<T: ExtendedNumOps> {
+    pub x: T,
+    pub y: T,
 }
 
 #[macro_export]
 macro_rules! point {
-    ($x:expr,$y:expr) => {
-        Point { x: $x, y: $y }
+    ($t:ty, $x:expr,$y:expr) => {
+        Point {
+            x: $x as $t,
+            y: $y as $t,
+        }
     };
 }
 
 #[macro_export]
 macro_rules! points {
-    ($(($x:expr,$y:expr)),*) => {
-        &[$(point!($x,$y)),*]
+    ($t: ty, $(($x:expr,$y:expr)),*) => {
+        &[$(point!($t,$x,$y)),*]
     };
 }
 
-fn get_sq_dist(p1: &Point, p2: &Point) -> f64 {
+fn get_sq_dist<T: ExtendedNumOps>(p1: &Point<T>, p2: &Point<T>) -> T {
     let dx = p2.x - p1.x;
     let dy = p2.y - p1.y;
 
     dx * dx + dy * dy
 }
 
-fn get_sq_seg_dist(pt: &Point, start: &Point, end: &Point) -> f64 {
+fn get_sq_seg_dist<T: ExtendedNumOps>(pt: &Point<T>, start: &Point<T>, end: &Point<T>) -> T {
     let (mut x, mut y, mut dx, mut dy) = (start.x, start.y, end.x - start.x, end.y - start.y);
 
-    if dx != 0.0 || dy != 0.0 {
+    if !dx.is_zero() || !dy.is_zero() {
         let t = ((pt.x - x) * dx + (pt.y - y) * dy) / (dx * dx + dy * dy);
 
-        if t > 1.0 {
+        if t > T::one() {
             x = end.x;
             y = end.y;
-        } else if t > 0.0 {
+        } else if t > T::zero() {
             x += dx * t;
             y += dy * t;
         }
@@ -50,7 +57,7 @@ fn get_sq_seg_dist(pt: &Point, start: &Point, end: &Point) -> f64 {
     dx * dx + dy * dy
 }
 
-fn simplify_radial_dist(points: &[Point], tolerance: f64) -> Vec<Point> {
+fn simplify_radial_dist<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T) -> Vec<Point<T>> {
     let mut prev_point = points[0];
     let mut new_points = vec![prev_point];
     let mut point = prev_point;
@@ -70,12 +77,12 @@ fn simplify_radial_dist(points: &[Point], tolerance: f64) -> Vec<Point> {
     new_points
 }
 
-fn simplify_dp_step(
-    points: &[Point],
+fn simplify_dp_step<T: ExtendedNumOps>(
+    points: &[Point<T>],
     first: usize,
     last: usize,
-    tolerance: f64,
-    simplified: &mut Vec<Point>,
+    tolerance: T,
+    simplified: &mut Vec<Point<T>>,
 ) {
     let mut max_sq_dist = tolerance;
     let mut max_index = 0;
@@ -99,7 +106,7 @@ fn simplify_dp_step(
     }
 }
 
-fn simplify_douglas_peucker(points: &[Point], tolerance: f64) -> Vec<Point> {
+fn simplify_douglas_peucker<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T) -> Vec<Point<T>> {
     let mut simplified = vec![points[0]];
     simplify_dp_step(points, 0, points.len() - 1, tolerance, &mut simplified);
     simplified.push(points[points.len() - 1]);
@@ -107,12 +114,18 @@ fn simplify_douglas_peucker(points: &[Point], tolerance: f64) -> Vec<Point> {
     simplified
 }
 
-pub fn simplify(points: &[Point], tolerance: f64, high_quality: bool) -> Vec<Point> {
+pub fn simplify<T: ExtendedNumOps>(
+    points: &[Point<T>],
+    tolerance: f64,
+    high_quality: bool,
+) -> Vec<Point<T>> {
     if points.len() <= 2 {
         return points.to_vec();
     }
 
-    let tolerance_sq = tolerance * tolerance;
+    let tolerance_t = T::from_f64(tolerance).unwrap_or_else(T::one);
+
+    let tolerance_sq = tolerance_t * tolerance_t;
     let intermediate = if high_quality {
         points.to_vec()
     } else {
