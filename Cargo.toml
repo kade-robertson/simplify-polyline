@@ -10,6 +10,7 @@ keywords = ["simplify", "polyline", "geometry", "simplify-js"]
 categories = ["mathematics", "graphics"]
 
 [dependencies]
+num-traits = "0.2"
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 
