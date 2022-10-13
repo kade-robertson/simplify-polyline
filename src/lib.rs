@@ -25,7 +25,7 @@ macro_rules! point {
 #[macro_export]
 macro_rules! points {
     ($t: ty, $(($x:expr,$y:expr)),*) => {
-        &[$(point!($t,$x,$y)),*]
+        &[$(Point { x: $x as $t, y: $y as $t }),*]
     };
 }
 
