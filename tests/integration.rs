@@ -1,4 +1,4 @@
-use simplify_polyline::{point, points, simplify, Point};
+use simplify_polyline::{points, simplify, Point};
 
 #[test]
 fn returns_empty_vec_if_no_points() {
