@@ -3,6 +3,7 @@ on:
     branches:
       - master
 
+name: release
 jobs:
   release-please:
     name: release-please

@@ -2,6 +2,7 @@ on:
   pull_request:
     branches: [ master ]
 
+name: test
 jobs:
   test:
     name: unit / integration tests (${{ matrix.toolchain }})

@@ -2,6 +2,7 @@ on:
   pull_request:
     branches: [ master ]
 
+name: commitlint
 jobs:
   commitlint:
     name: conventional commit linting
