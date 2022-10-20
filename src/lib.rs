@@ -1,5 +1,5 @@
 #![warn(missing_docs)]
-#![warn(missing_doc_code_examples)]
+#![warn(rustdoc::missing_doc_code_examples)]
 #![doc = include_str!("../README.md")]
 
 use traits::ExtendedNumOps;
@@ -9,13 +9,29 @@ use serde::{Deserialize, Serialize};
 
 pub mod traits;
 
+/// A two-diemensional point, where the value of each coordinate must implement the
+/// [ExtendedNumOps] trait.
+///
+/// Example:
+/// ```
+/// let point = Point<f64> { x: 1.0, y: 1.0 };
+/// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
 pub struct Point<T: ExtendedNumOps> {
+    /// The x coordinate value.
     pub x: T,
+    /// The y coordinate value.
     pub y: T,
 }
 
+/// Creates a [Point] struct, used for input and output for [simplify]. A type should be specified
+/// as the first argument that implements the [ExtendedNumOps] trait.
+///
+/// Example
+/// ```
+/// let point = point!(f64, 1.0, 1.0);
+/// ```
 #[macro_export]
 macro_rules! point {
     ($t:ty, $x:expr,$y:expr) => {
@@ -26,6 +42,15 @@ macro_rules! point {
     };
 }
 
+/// Creates a &[[Point]] array, used for  used for input and output for [simplify]. A type should
+/// be specified as the first argument that implements the [ExtendedNumOps] trait. Point values
+/// should be specified as length-2 tuples, where each value matches the input type, in (x, y)
+/// order.
+///
+/// Example
+/// ```
+/// let points = points![f64, (1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
+/// ```
 #[macro_export]
 macro_rules! points {
     ($t: ty, $(($x:expr,$y:expr)),*) => {
