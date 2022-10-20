@@ -3,7 +3,7 @@ use traits::ExtendedNumOps;
 #[cfg(feature = "tests")]
 use serde::{Deserialize, Serialize};
 
-mod traits;
+pub mod traits;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
