@@ -1,3 +1,7 @@
+#![warn(missing_docs)]
+#![warn(missing_doc_code_examples)]
+#![doc = include_str!("../README.md")]
+
 use traits::ExtendedNumOps;
 
 #[cfg(feature = "tests")]
