@@ -2,16 +2,24 @@ on:
   pull_request:
     branches: [ master ]
 
+name: test
 jobs:
-  test_verify:
-    name: test-and-verify-builds
+  test:
+    name: unit + integration tests (${{ matrix.toolchain }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain: [stable, nightly]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v1.3.0
+        uses: Swatinem/rust-cache@v2
+
       - name: Test
         run: cargo test --features tests

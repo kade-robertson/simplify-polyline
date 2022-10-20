@@ -1,20 +1,38 @@
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
 
+name: release
 jobs:
-  release_builds:
-    name: simplify-polyline release
-    if: "!github.event.release.prerelease"
+  release-please:
+    name: release-please
+    runs-on: ubuntu-latest
+    outputs:
+        released: ${{ steps.release.outputs.releases_created }}
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: rust
+          package-name: simplify-polyline
+          bump-minor-pre-major: true
+
+  create-release:
+    name: create release
+    needs: release-please
+    if: ${{ needs.release-please.outputs.released }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v1.3.0
+        uses: Swatinem/rust-cache@v2
+
       - name: Publish
         uses: katyo/publish-crates@v1
         with:
-            registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
