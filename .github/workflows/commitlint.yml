@@ -1,6 +1,7 @@
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
+    types: [opened, synchronize, reopened, edited]
 
 name: commitlint
 jobs:
@@ -8,13 +9,16 @@ jobs:
     name: conventional commit linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
 
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
       - name: Lint commits
         run: |
           cargo install conventional_commits_linter
-          conventional_commits_linter --allow-angular-type-only --from-commit-hash ${{ github.event.pull_request.base.sha }}
+          conventional_commits_linter --allow-angular-type-only --from-reference "$GITHUB_BASE_REF"
