@@ -1,0 +1,17 @@
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  commitlint:
+    name: conventional commit linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Lint commits
+        run: |
+          cargo install conventional_commits_linter
+          conventional_commits_linter --allow-angular-type-only --from-commit-hash ${{ github.event.pull_request.base.sha }}
