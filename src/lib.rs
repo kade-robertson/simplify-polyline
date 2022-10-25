@@ -14,7 +14,9 @@ pub mod traits;
 ///
 /// Example:
 /// ```
-/// let point = Point<f64> { x: 1.0, y: 1.0 };
+/// use simplify_polyline::*;
+///
+/// let point = Point::<f64> { x: 1.0, y: 1.0 };
 /// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
@@ -30,6 +32,8 @@ pub struct Point<T: ExtendedNumOps> {
 ///
 /// Example
 /// ```
+/// use simplify_polyline::*;
+///
 /// let point = point!(f64, 1.0, 1.0);
 /// ```
 #[macro_export]
@@ -49,6 +53,8 @@ macro_rules! point {
 ///
 /// Example
 /// ```
+/// use simplify_polyline::*;
+///
 /// let points = points![f64, (1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
 /// ```
 #[macro_export]
