@@ -149,6 +149,18 @@ fn simplify_douglas_peucker<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T
     simplified
 }
 
+/// Simplifies a polyline within a given tolerance.
+///
+///
+/// # Arguments
+///
+/// - `tolerance`: A distance measurement used for both radial distance and Douglas–Peucker -- the
+/// higher the tolerance, the more points will be removed from the polyline.
+/// - `high_quality`: Controls the algorithm(s) to be used in simplification
+///   - `true`: this will take the entire array of points and simplify using the Douglas–Peucker
+///     algorithm.
+///   - `false`: the list of points are first filtered using a simple radial distance algorithm,
+///     and then passed to the the Douglas-Peucker algorithm for final simplification.
 pub fn simplify<T: ExtendedNumOps>(
     points: &[Point<T>],
     tolerance: f64,

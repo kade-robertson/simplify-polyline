@@ -1,5 +1,6 @@
 use num_traits::{FromPrimitive, Num, NumAssign};
 
+/// Required traits a number type must implement to be used with [simplify](crate::simplify).
 pub trait ExtendedNumOps: Num + Clone + Copy + NumAssign + PartialOrd + FromPrimitive {}
 
 macro_rules! impl_extended_num_ops {
