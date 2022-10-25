@@ -2,12 +2,12 @@
 #![warn(rustdoc::missing_doc_code_examples)]
 #![doc = include_str!("../README.md")]
 
-use traits::ExtendedNumOps;
+pub use traits::ExtendedNumOps;
 
 #[cfg(feature = "tests")]
 use serde::{Deserialize, Serialize};
 
-pub mod traits;
+mod traits;
 
 /// A two-diemensional point, where the value of each coordinate must implement the
 /// [ExtendedNumOps] trait.
