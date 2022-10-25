@@ -24,9 +24,9 @@ fn main() {
     let points = points![f64, (0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)];
 
     // low-quality simplification (fast)
-    let new_points = simplify(points, 1, false);
+    let new_points = simplify(points, 1.0, false);
     // low-quality simplification (slower)
-    let new_points = simplify(points, 1, true);
+    let new_points = simplify(points, 1.0, true);
 }
 ```
 
