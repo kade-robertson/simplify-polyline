@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/kade-robertson/simplify-polyline/compare/v0.3.0...v0.4.0) (2022-10-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* use blanket implementation for trait (#10)
+
+### Code Refactoring
+
+* use blanket implementation for trait ([#10](https://github.com/kade-robertson/simplify-polyline/issues/10)) ([63de772](https://github.com/kade-robertson/simplify-polyline/commit/63de772819acb80b06db93deec37f8457fdaad54))
+
 ## [0.3.0](https://github.com/kade-robertson/simplify-polyline/compare/v0.2.1...v0.3.0) (2022-10-25)
 
 
