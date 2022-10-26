@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
           release-type: rust
           package-name: simplify-polyline
           bump-minor-pre-major: true
