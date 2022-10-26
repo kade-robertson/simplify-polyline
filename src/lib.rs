@@ -16,7 +16,7 @@ mod traits;
 /// ```
 /// use simplify_polyline::*;
 ///
-/// let point = Point::<f64> { x: 1.0, y: 1.0 };
+/// let point = Point { x: 1.0, y: 1.0 };
 /// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
@@ -34,15 +34,12 @@ pub struct Point<T: ExtendedNumOps> {
 /// ```
 /// use simplify_polyline::*;
 ///
-/// let point = point!(f64, 1.0, 1.0);
+/// let point = point!(1.0, 1.0);
 /// ```
 #[macro_export]
 macro_rules! point {
-    ($t:ty, $x:expr,$y:expr) => {
-        Point {
-            x: $x as $t,
-            y: $y as $t,
-        }
+    ($x:expr,$y:expr) => {
+        Point { x: $x, y: $y }
     };
 }
 
@@ -55,12 +52,12 @@ macro_rules! point {
 /// ```
 /// use simplify_polyline::*;
 ///
-/// let points = points![f64, (1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
+/// let points = points![(1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
 /// ```
 #[macro_export]
 macro_rules! points {
-    ($t: ty, $(($x:expr,$y:expr)),*) => {
-        &[$(Point { x: $x as $t, y: $y as $t }),*]
+    ($(($x:expr,$y:expr)),*) => {
+        &[$(Point { x: $x, y: $y }),*]
     };
 }
 
