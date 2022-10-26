@@ -14,14 +14,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
+      - name: Download conventional_commits_linter
+        run: wget -q -O tmp.zip "https://gitlab.com/DeveloperC/conventional_commits_linter/-/jobs/artifacts/bin-0.12.1/download?job=release-binary-compiling-x86_64-linux-musl" && unzip tmp.zip && rm tmp.zip
 
       - name: Lint commits
-        run: |
-          cargo install conventional_commits_linter
-          conventional_commits_linter --allow-angular-type-only --from-reference "origin/$GITHUB_BASE_REF"
+        run: ./conventional_commits_linter --allow-angular-type-only --from-reference "origin/$GITHUB_BASE_REF"
