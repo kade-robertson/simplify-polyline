@@ -17,11 +17,11 @@ fn main() {
     ];
     // alternatively, use the point! macro
     let points = &[
-        point!(f64, 0.0, 0.0), point!(f64, 1.0, 1.0), point!(f64, 2.0, 2.0),
-        point!(f64, 3.0, 3.0), point!(f64, 4.0, 4.0)
+        point!(0.0, 0.0), point!(1.0, 1.0), point!(2.0, 2.0),
+        point!(3.0, 3.0), point!(4.0, 4.0)
     ];
     // alternatively, use the points! macro
-    let points = points![f64, (0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)];
+    let points = points![(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)];
 
     // low-quality simplification (fast)
     let new_points = simplify(points, 1.0, false);

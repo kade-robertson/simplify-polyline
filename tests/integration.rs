@@ -1,4 +1,4 @@
-use simplify_polyline::{points, simplify, Point};
+use simplify_polyline::{point, points, simplify, Point};
 
 #[test]
 fn returns_empty_vec_if_no_points() {
@@ -7,10 +7,14 @@ fn returns_empty_vec_if_no_points() {
 }
 
 #[test]
-fn returns_empty_vec_if_one_point() {
-    let input = points!(f64, (0.0, 0.0));
-    let result = simplify(input, 1.0, false);
-    assert_eq!(result[0], input[0]);
+fn returns_same_vec_if_one_point() {
+    let input1 = points![(0.0, 0.0)];
+    let result1 = simplify(input1, 1.0, false);
+    assert_eq!(result1[0], input1[0]);
+
+    let input2 = point!(0.0, 0.0);
+    let result2 = simplify(&[input2], 1.0, false);
+    assert_eq!(result1, result2);
 }
 
 #[test]
