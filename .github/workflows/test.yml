@@ -13,11 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          profile: minimal
-          override: true
+      - uses: dtolnay/rust-toolchain@${{ matrix.toolchain }}
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
