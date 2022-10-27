@@ -12,6 +12,7 @@ jobs:
         released: ${{ steps.release.outputs.releases_created }}
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
           release-type: rust
@@ -21,23 +22,20 @@ jobs:
   create-release:
     name: create release
     needs: release-please
+    if: ${{ needs.release-please.outputs.released }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        if: ${{ needs.release-please.outputs.released }}
 
       - uses: actions-rs/toolchain@v1
-        if: ${{ needs.release-please.outputs.released }}
         with:
           profile: minimal
           toolchain: stable
 
       - name: Rust Cache
-        if: ${{ needs.release-please.outputs.released }}
         uses: Swatinem/rust-cache@v2
 
       - name: Publish
-        if: ${{ needs.release-please.outputs.released }}
         uses: katyo/publish-crates@v1
         with:
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}

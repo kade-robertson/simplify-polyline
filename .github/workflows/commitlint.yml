@@ -18,4 +18,4 @@ jobs:
         run: wget -q -O tmp.zip "https://gitlab.com/DeveloperC/conventional_commits_linter/-/jobs/artifacts/bin-0.12.1/download?job=release-binary-compiling-x86_64-linux-musl" && unzip tmp.zip && rm tmp.zip
 
       - name: Lint commits
-        run: ./conventional_commits_linter --allow-angular-type-only --from-reference "origin/$GITHUB_BASE_REF"
+        run: ./conventional_commits_linter --from-reference "origin/$GITHUB_BASE_REF"
