@@ -73,13 +73,12 @@ fn get_sq_seg_dist<T: ExtendedNumOps>(pt: &Point<T>, start: &Point<T>, end: &Poi
 
     if !dx.is_zero() || !dy.is_zero() {
         let t = ((pt.x - x) * dx + (pt.y - y) * dy) / (dx * dx + dy * dy);
-
         if t > T::one() {
             x = end.x;
             y = end.y;
         } else if t > T::zero() {
-            x += dx * t;
-            y += dy * t;
+            x = x + (dx * t);
+            y = y + (dy * t);
         }
     }
 

@@ -1,8 +1,8 @@
 # simplify-polyline
 
-[![crates.io total downloads](https://img.shields.io/crates/d/simplify-polyline?style=flat-square)](https://crates.io/crates/simplify-polyline) [![docs.rs status](https://img.shields.io/docsrs/simplify-polyline?style=flat-square)](https://docs.rs/simplify-polyline/latest/)
+[![crates.io latest version](https://img.shields.io/crates/v/simplify-polyline?style=flat-square)](https://crates.io/crates/simplify-polyline) [![crates.io total downloads](https://img.shields.io/crates/d/simplify-polyline?style=flat-square)](https://crates.io/crates/simplify-polyline) [![docs.rs status](https://img.shields.io/docsrs/simplify-polyline?style=flat-square)](https://docs.rs/simplify-polyline/latest/)
 
-A nearly line-by-line Rust port of the Javascript [simplify-js](https://github.com/mourner/simplify-js) library.
+A Rust port of the Javascript [simplify-js](https://github.com/mourner/simplify-js) library.
 
 ## Examples
 
