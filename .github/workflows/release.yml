@@ -15,6 +15,9 @@ jobs:
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: 'rust'
+          shared-key: 'cache'
 
       - name: Publish
         uses: katyo/publish-crates@v1
