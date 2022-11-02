@@ -2,6 +2,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  CARGO_UNSTABLE_SPARSE_REGISTRY: true
+
 name: test
 jobs:
   test:
