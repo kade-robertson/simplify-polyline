@@ -30,6 +30,10 @@ fn main() {
 }
 ```
 
+## Features
+
+- `serde`, optional, defaults to off. Allows serializing/deserializing points.
+
 ## Performance
 
 Measurements taken with an AMD Ryzen 7 5800x, in Pop!\_OS 22.04.
@@ -47,14 +51,26 @@ Measurements taken with an AMD Ryzen 7 5800x, in Pop!\_OS 22.04.
 
 ## Contributing
 
-Running tests:
+### Tests
 
 ```shell
-$ cargo test --features tests
+$ cargo test --all-features
 ```
 
-Running benchmarks:
+or
 
 ```shell
-$ cargo +nightly bench --features tests
+$ cargo make test
+```
+
+### Benchmarks
+
+```shell
+$ cargo +nightly bench all-features
+```
+
+or
+
+```shell
+$ cargo make bench
 ```
