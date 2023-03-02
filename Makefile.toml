@@ -4,4 +4,4 @@ args = ["test", "--all-features"]
 
 [tasks.bench]
 command = "cargo"
-args = ["+nightly", "bench", "--all-features"]
+args = ["bench", "--all-features"]

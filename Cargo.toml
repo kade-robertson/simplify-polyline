@@ -15,6 +15,7 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 
 [dev-dependencies]
 serde_json = "1.0"
+criterion = "0.4"
 
 [features]
 serde = ["dep:serde"]
@@ -27,4 +28,5 @@ required-features = ["serde"]
 [[bench]]
 name = "bench"
 path = "benches/bench.rs"
+harness = false
 required-features = ["serde"]

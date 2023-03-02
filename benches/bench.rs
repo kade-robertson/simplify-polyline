@@ -1,56 +1,79 @@
-#![feature(test)]
-extern crate test;
+use criterion::{criterion_group, criterion_main, Criterion};
 
 use simplify_polyline::{simplify, Point};
-use test::Bencher;
 
 pub const BENCH_FIXTURE_1118: &str = include_str!("../fixtures/bench-1118.json");
 pub const BENCH_FIXTURE_73752: &str = include_str!("../fixtures/bench-73752.json");
 
-#[bench]
-fn simplify_hq_1118_pts(b: &mut Bencher) {
+fn simplify_hq_1118_pts(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_1118).unwrap();
-    b.iter(|| simplify(&points, 1.0, true));
+    c.bench_function("simplify_hq_1118_pts", |b| {
+        b.iter(|| simplify(&points, 1.0, true))
+    });
 }
 
-#[bench]
-fn simplify_lq_1118_pts(b: &mut Bencher) {
+fn simplify_lq_1118_pts(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_1118).unwrap();
-    b.iter(|| simplify(&points, 1.0, false));
+    c.bench_function("simplify_lq_1118_pts", |b| {
+        b.iter(|| simplify(&points, 1.0, false))
+    });
 }
 
-#[bench]
-fn simplify_hq_1118_pts_tol5(b: &mut Bencher) {
+fn simplify_hq_1118_pts_tol5(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_1118).unwrap();
-    b.iter(|| simplify(&points, 5.0, true));
+    c.bench_function("simplify_hq_1118_pts_tol5", |b| {
+        b.iter(|| simplify(&points, 5.0, true))
+    });
 }
 
-#[bench]
-fn simplify_lq_1118_pts_tol5(b: &mut Bencher) {
+fn simplify_lq_1118_pts_tol5(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_1118).unwrap();
-    b.iter(|| simplify(&points, 5.0, false));
+    c.bench_function("simplify_lq_1118_pts_tol5", |b| {
+        b.iter(|| simplify(&points, 5.0, false))
+    });
 }
 
-#[bench]
-fn simplify_hq_73752_pts(b: &mut Bencher) {
+fn simplify_hq_73752_pts(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_73752).unwrap();
-    b.iter(|| simplify(&points, 1.0, true));
+    c.bench_function("simplify_hq_73752_pts", |b| {
+        b.iter(|| simplify(&points, 1.0, true))
+    });
 }
 
-#[bench]
-fn simplify_lq_73752_pts(b: &mut Bencher) {
+fn simplify_lq_73752_pts(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_73752).unwrap();
-    b.iter(|| simplify(&points, 1.0, false));
+    c.bench_function("simplify_lq_73752_pts", |b| {
+        b.iter(|| simplify(&points, 1.0, false))
+    });
 }
 
-#[bench]
-fn simplify_hq_73752_pts_tol5(b: &mut Bencher) {
+fn simplify_hq_73752_pts_tol5(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_73752).unwrap();
-    b.iter(|| simplify(&points, 5.0, true));
+    c.bench_function("simplify_hq_73752_pts_tol5", |b| {
+        b.iter(|| simplify(&points, 5.0, true))
+    });
 }
 
-#[bench]
-fn simplify_lq_73752_pts_tol5(b: &mut Bencher) {
+fn simplify_lq_73752_pts_tol5(c: &mut Criterion) {
     let points = serde_json::from_str::<Vec<Point<f64>>>(BENCH_FIXTURE_73752).unwrap();
-    b.iter(|| simplify(&points, 5.0, false));
+    c.bench_function("simplify_lq_73752_pts_tol5", |b| {
+        b.iter(|| simplify(&points, 5.0, false))
+    });
 }
+
+criterion_group!(
+    simplify_1118,
+    simplify_lq_1118_pts,
+    simplify_lq_1118_pts_tol5,
+    simplify_hq_1118_pts,
+    simplify_hq_1118_pts_tol5
+);
+criterion_group!(
+    simplify_73752,
+    simplify_lq_73752_pts,
+    simplify_lq_73752_pts_tol5,
+    simplify_hq_73752_pts,
+    simplify_hq_73752_pts_tol5
+);
+
+criterion_main!(simplify_1118, simplify_73752);
