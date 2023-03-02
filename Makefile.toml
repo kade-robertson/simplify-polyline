@@ -1,0 +1,7 @@
+[tasks.test]
+command = "cargo"
+args = ["test", "--all-features"]
+
+[tasks.bench]
+command = "cargo"
+args = ["+nightly", "bench", "--all-features"]

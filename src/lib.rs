@@ -1,10 +1,9 @@
 #![warn(missing_docs)]
-#![warn(rustdoc::missing_doc_code_examples)]
 #![doc = include_str!("../README.md")]
 
 pub use traits::ExtendedNumOps;
 
-#[cfg(feature = "tests")]
+#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 mod traits;
@@ -19,7 +18,7 @@ mod traits;
 /// let point = Point { x: 1.0, y: 1.0 };
 /// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-#[cfg_attr(feature = "tests", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Point<T: ExtendedNumOps> {
     /// The x coordinate value.
     pub x: T,
