@@ -66,7 +66,7 @@ $ cargo make test
 ### Benchmarks
 
 ```shell
-$ cargo +nightly bench all-features
+$ cargo +nightly bench --all-features
 ```
 
 or
