@@ -3,98 +3,46 @@
 
 pub use traits::ExtendedNumOps;
 
+/// stub
 #[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
+pub mod serde;
 
+mod point;
 mod traits;
 
-/// A two-diemensional point, where the value of each coordinate must implement the
-/// [ExtendedNumOps] trait.
-///
-/// Example:
-/// ```
-/// use simplify_polyline::*;
-///
-/// let point = Point { x: 1.0, y: 1.0 };
-/// ```
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-pub struct Point<T: ExtendedNumOps> {
-    /// The x coordinate value.
-    pub x: T,
-    /// The y coordinate value.
-    pub y: T,
-}
+pub use point::Point;
 
-/// Creates a [Point] struct, used for input and output for [simplify]. A type should be specified
-/// as the first argument that implements the [ExtendedNumOps] trait.
-///
-/// Example
-/// ```
-/// use simplify_polyline::*;
-///
-/// let point = point!(1.0, 1.0);
-/// ```
-#[macro_export]
-macro_rules! point {
-    ($x:expr,$y:expr) => {
-        Point { x: $x, y: $y }
-    };
-}
+fn get_sq_seg_dist<const D: usize, T: ExtendedNumOps>(
+    pt: &Point<D, T>,
+    start: &Point<D, T>,
+    end: &Point<D, T>,
+) -> T {
+    let mut intersection = *start;
+    let difference = end - start;
 
-/// Creates a &[[Point]] array, used for  used for input and output for [simplify]. A type should
-/// be specified as the first argument that implements the [ExtendedNumOps] trait. Point values
-/// should be specified as length-2 tuples, where each value matches the input type, in (x, y)
-/// order.
-///
-/// Example
-/// ```
-/// use simplify_polyline::*;
-///
-/// let points = points![(1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
-/// ```
-#[macro_export]
-macro_rules! points {
-    ($(($x:expr,$y:expr)),*) => {
-        &[$(Point { x: $x, y: $y }),*]
-    };
-}
-
-fn get_sq_dist<T: ExtendedNumOps>(p1: &Point<T>, p2: &Point<T>) -> T {
-    let dx = p2.x - p1.x;
-    let dy = p2.y - p1.y;
-
-    dx * dx + dy * dy
-}
-
-fn get_sq_seg_dist<T: ExtendedNumOps>(pt: &Point<T>, start: &Point<T>, end: &Point<T>) -> T {
-    let (mut x, mut y, mut dx, mut dy) = (start.x, start.y, end.x - start.x, end.y - start.y);
-
-    if !dx.is_zero() || !dy.is_zero() {
-        let t = ((pt.x - x) * dx + (pt.y - y) * dy) / (dx * dx + dy * dy);
+    if !difference.is_origin() {
+        let t = ((pt - start) * difference).value_sum() / difference.sq_dist_origin();
         if t > T::one() {
-            x = end.x;
-            y = end.y;
+            intersection = *end;
         } else if t > T::zero() {
-            x = x + (dx * t);
-            y = y + (dy * t);
+            intersection = intersection + (difference * t)
         }
     }
 
-    dx = pt.x - x;
-    dy = pt.y - y;
-
-    dx * dx + dy * dy
+    (pt - intersection).sq_dist_origin()
 }
 
-fn simplify_radial_dist<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T) -> Vec<Point<T>> {
+fn simplify_radial_dist<const D: usize, T: ExtendedNumOps>(
+    points: &[Point<D, T>],
+    tolerance: T,
+) -> Vec<Point<D, T>> {
     let mut prev_point = points[0];
     let mut new_points = vec![prev_point];
     let mut point = prev_point;
 
     for pt in points.iter().skip(1) {
         point = *pt;
-        if get_sq_dist(pt, &prev_point) > tolerance {
+        if pt.sq_dist(&prev_point) > tolerance {
             new_points.push(*pt);
             prev_point = *pt;
         }
@@ -107,12 +55,12 @@ fn simplify_radial_dist<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T) ->
     new_points
 }
 
-fn simplify_dp_step<T: ExtendedNumOps>(
-    points: &[Point<T>],
+fn simplify_dp_step<const D: usize, T: ExtendedNumOps>(
+    points: &[Point<D, T>],
     first: usize,
     last: usize,
     tolerance: T,
-    simplified: &mut Vec<Point<T>>,
+    simplified: &mut Vec<Point<D, T>>,
 ) {
     let mut max_sq_dist = tolerance;
     let mut max_index = 0;
@@ -136,7 +84,10 @@ fn simplify_dp_step<T: ExtendedNumOps>(
     }
 }
 
-fn simplify_douglas_peucker<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T) -> Vec<Point<T>> {
+fn simplify_douglas_peucker<const D: usize, T: ExtendedNumOps>(
+    points: &[Point<D, T>],
+    tolerance: T,
+) -> Vec<Point<D, T>> {
     let mut simplified = vec![points[0]];
     simplify_dp_step(points, 0, points.len() - 1, tolerance, &mut simplified);
     simplified.push(points[points.len() - 1]);
@@ -156,18 +107,16 @@ fn simplify_douglas_peucker<T: ExtendedNumOps>(points: &[Point<T>], tolerance: T
 ///     algorithm.
 ///   - `false`: the list of points are first filtered using a simple radial distance algorithm,
 ///     and then passed to the the Douglas-Peucker algorithm for final simplification.
-pub fn simplify<T: ExtendedNumOps>(
-    points: &[Point<T>],
-    tolerance: f64,
+pub fn simplify<const D: usize, T: ExtendedNumOps>(
+    points: &[Point<D, T>],
+    tolerance: T,
     high_quality: bool,
-) -> Vec<Point<T>> {
+) -> Vec<Point<D, T>> {
     if points.len() <= 2 {
         return points.to_vec();
     }
 
-    let tolerance_t = T::from_f64(tolerance).unwrap_or_else(T::one);
-
-    let tolerance_sq = tolerance_t * tolerance_t;
+    let tolerance_sq = tolerance * tolerance;
     let intermediate = if high_quality {
         points.to_vec()
     } else {
