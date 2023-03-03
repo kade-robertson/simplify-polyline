@@ -20,7 +20,7 @@ fn get_sq_seg_dist<const D: usize, T: ExtendedNumOps>(
     let mut intersection = *start;
     let difference = end - start;
 
-    if difference.not_origin() {
+    if !difference.is_origin() {
         let t = ((pt - start) * difference).value_sum() / difference.sq_dist_origin();
         if t > T::one() {
             intersection = *end;
@@ -29,7 +29,7 @@ fn get_sq_seg_dist<const D: usize, T: ExtendedNumOps>(
         }
     }
 
-    (pt - &intersection).sq_dist_origin()
+    (pt - intersection).sq_dist_origin()
 }
 
 fn simplify_radial_dist<const D: usize, T: ExtendedNumOps>(
@@ -109,16 +109,14 @@ fn simplify_douglas_peucker<const D: usize, T: ExtendedNumOps>(
 ///     and then passed to the the Douglas-Peucker algorithm for final simplification.
 pub fn simplify<const D: usize, T: ExtendedNumOps>(
     points: &[Point<D, T>],
-    tolerance: f64,
+    tolerance: T,
     high_quality: bool,
 ) -> Vec<Point<D, T>> {
     if points.len() <= 2 {
         return points.to_vec();
     }
 
-    let tolerance_t = T::from_f64(tolerance).unwrap_or_else(T::one);
-
-    let tolerance_sq = tolerance_t * tolerance_t;
+    let tolerance_sq = tolerance * tolerance;
     let intermediate = if high_quality {
         points.to_vec()
     } else {

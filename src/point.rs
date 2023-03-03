@@ -2,12 +2,35 @@ use std::ops::{Add, Mul, Sub};
 
 use crate::ExtendedNumOps;
 
+/// The basic input type for constructing and simplifying a polyline. It can have any number of components, and will
+/// work with components that implement the [ExtendedNumOps] type. Dimensionality must be determined at compile time.
+///
+/// This also implements some basic math operations between points, like:
+/// - addition
+/// - subtraction
+/// - component-wise multiplication
+/// - scalar multiplication
+///
+/// ## Example
+/// ```
+/// use simplify_polyline::*;
+///
+/// let point2d: Point<2, i32> = Point { vec: [1, 1] };
+/// let another_point2d: Point<2, i32> = Point { vec: [2, 2] };
+///
+/// assert_eq!(point2d + another_point2d, Point { vec: [3, 3] });
+/// assert_eq!(point2d - another_point2d, Point { vec: [-1, -1] });
+/// assert_eq!(point2d * another_point2d, Point { vec: [2, 2] });
+/// assert_eq!(point2d * 7, Point { vec: [7, 7] });
+/// ```
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Point<const D: usize, T: ExtendedNumOps> {
+    /// The components of the point.
     pub vec: [T; D],
 }
 
 impl<const D: usize, T: ExtendedNumOps> Point<D, T> {
+    /// Computes the squared distance between two points.
     #[inline(always)]
     pub fn sq_dist(&self, other: &Point<D, T>) -> T {
         match D {
@@ -39,6 +62,7 @@ impl<const D: usize, T: ExtendedNumOps> Point<D, T> {
         }
     }
 
+    /// Computes the squared distance between this point, and the origin.
     #[inline(always)]
     pub fn sq_dist_origin(&self) -> T {
         match D {
@@ -60,6 +84,7 @@ impl<const D: usize, T: ExtendedNumOps> Point<D, T> {
         }
     }
 
+    /// Computes the sum of each value of the point.
     #[inline(always)]
     pub fn value_sum(&self) -> T {
         match D {
@@ -74,28 +99,60 @@ impl<const D: usize, T: ExtendedNumOps> Point<D, T> {
         }
     }
 
+    /// Checks if the point is the origin point (all values at zero).
     #[inline(always)]
-    pub fn not_origin(&self) -> bool {
+    pub fn is_origin(&self) -> bool {
         let zero = T::zero();
         match D {
-            2 => self.vec[0] != zero || self.vec[1] != zero,
-            3 => self.vec[0] != zero || self.vec[1] != zero || self.vec[2] != zero,
+            2 => self.vec[0] == zero && self.vec[1] == zero,
+            3 => self.vec[0] == zero && self.vec[1] == zero && self.vec[2] == zero,
             4 => {
-                self.vec[0] != zero
-                    || self.vec[1] != zero
-                    || self.vec[2] != zero
-                    || self.vec[3] != zero
+                self.vec[0] == zero
+                    && self.vec[1] == zero
+                    && self.vec[2] == zero
+                    && self.vec[3] == zero
             }
-            _ => self.vec.iter().any(|v| v != &zero),
+            _ => self.vec.iter().all(|v| v == &zero),
         }
     }
 }
 
-impl<const D: usize, T: ExtendedNumOps> Add<&Point<D, T>> for &Point<D, T> {
+macro_rules! impl_ref_op {
+    (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
+        impl<'a, const D: usize, T: ExtendedNumOps> $imp<$u> for &'a $t {
+            type Output = $t;
+
+            #[inline(always)]
+            fn $method(self, other: $u) -> Self::Output {
+                $imp::$method(*self, other)
+            }
+        }
+
+        impl<'b, const D: usize, T: ExtendedNumOps> $imp<&'b $u> for $t {
+            type Output = $t;
+
+            #[inline(always)]
+            fn $method(self, other: &'b $u) -> Self::Output {
+                $imp::$method(self, *other)
+            }
+        }
+
+        impl<'a, 'b, const D: usize, T: ExtendedNumOps> $imp<&'b $u> for &'a $t {
+            type Output = $t;
+
+            #[inline(always)]
+            fn $method(self, other: &'b $u) -> Self::Output {
+                $imp::$method(*self, *other)
+            }
+        }
+    };
+}
+
+impl<const D: usize, T: ExtendedNumOps> Add<Point<D, T>> for Point<D, T> {
     type Output = Point<D, T>;
 
     #[inline(always)]
-    fn add(self, rhs: &Point<D, T>) -> Self::Output {
+    fn add(self, rhs: Point<D, T>) -> Self::Output {
         match D {
             2 => {
                 let mut new_values = [T::zero(); D];
@@ -115,39 +172,13 @@ impl<const D: usize, T: ExtendedNumOps> Add<&Point<D, T>> for &Point<D, T> {
         }
     }
 }
+impl_ref_op!(impl Add, add for Point<D, T>, Point<D, T>);
 
-impl<const D: usize, T: ExtendedNumOps> Add<Point<D, T>> for &Point<D, T> {
+impl<const D: usize, T: ExtendedNumOps> Sub<Point<D, T>> for Point<D, T> {
     type Output = Point<D, T>;
 
     #[inline(always)]
-    fn add(self, rhs: Point<D, T>) -> Self::Output {
-        self + &rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Add<&Point<D, T>> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn add(self, rhs: &Point<D, T>) -> Self::Output {
-        &self + rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Add<Point<D, T>> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn add(self, rhs: Point<D, T>) -> Self::Output {
-        &self + &rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Sub<&Point<D, T>> for &Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn sub(self, rhs: &Point<D, T>) -> Self::Output {
+    fn sub(self, rhs: Point<D, T>) -> Self::Output {
         match D {
             2 => {
                 let mut new_values = [T::zero(); D];
@@ -167,30 +198,13 @@ impl<const D: usize, T: ExtendedNumOps> Sub<&Point<D, T>> for &Point<D, T> {
         }
     }
 }
+impl_ref_op!(impl Sub, sub for Point<D, T>, Point<D, T>);
 
-impl<const D: usize, T: ExtendedNumOps> Sub<&Point<D, T>> for Point<D, T> {
+impl<const D: usize, T: ExtendedNumOps> Mul<Point<D, T>> for Point<D, T> {
     type Output = Point<D, T>;
 
     #[inline(always)]
-    fn sub(self, rhs: &Point<D, T>) -> Self::Output {
-        &self - rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Sub<Point<D, T>> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn sub(self, rhs: Point<D, T>) -> Self::Output {
-        &self - &rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Mul<&Point<D, T>> for &Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn mul(self, rhs: &Point<D, T>) -> Self::Output {
+    fn mul(self, rhs: Point<D, T>) -> Self::Output {
         match D {
             2 => {
                 let mut new_values = [T::zero(); D];
@@ -210,16 +224,9 @@ impl<const D: usize, T: ExtendedNumOps> Mul<&Point<D, T>> for &Point<D, T> {
         }
     }
 }
+impl_ref_op!(impl Mul, mul for Point<D, T>, Point<D, T>);
 
-impl<const D: usize, T: ExtendedNumOps> Mul<Point<D, T>> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    fn mul(self, rhs: Point<D, T>) -> Self::Output {
-        &self * &rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Mul<T> for &Point<D, T> {
+impl<const D: usize, T: ExtendedNumOps> Mul<T> for Point<D, T> {
     type Output = Point<D, T>;
 
     #[inline(always)]
@@ -243,25 +250,23 @@ impl<const D: usize, T: ExtendedNumOps> Mul<T> for &Point<D, T> {
         }
     }
 }
+impl_ref_op!(impl Mul, mul for Point<D, T>, T);
 
-impl<const D: usize, T: ExtendedNumOps> Mul<&T> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn mul(self, rhs: &T) -> Self::Output {
-        &self * *rhs
-    }
-}
-
-impl<const D: usize, T: ExtendedNumOps> Mul<T> for Point<D, T> {
-    type Output = Point<D, T>;
-
-    #[inline(always)]
-    fn mul(self, rhs: T) -> Self::Output {
-        &self * rhs
-    }
-}
-
+/// Creates a single [Point], where the dimension is determined from the number of values specified, and the values all
+/// must implement [ExtendedNumOps] and be of the same type.
+///
+/// ## Example
+/// ```
+/// use simplify_polyline::*;
+///
+/// // 2d point
+/// let point2d: Point<2, i32> = point!(1, 2);
+/// assert_eq!(point2d.vec.len(), 2);
+///
+/// // 8d point
+/// let point8d: Point<8, i32> = point!(1, 2, 3, 4, 5, 6, 7, 8);
+/// assert_eq!(point8d.vec.len(), 8);
+/// ```
 #[macro_export]
 macro_rules! point {
     ($($values:expr),+) => {
@@ -269,9 +274,26 @@ macro_rules! point {
     };
 }
 
+/// Creates a [Point] array, where the dimension is determined by the length of the tuples in the array, and the values
+/// all must implement [ExtendedNumOps] and be of the same type. Point tuples must all be the same length.
+///
+/// ## Example
+/// ```
+/// use simplify_polyline::*;
+///
+/// // 2d array
+/// let points2d: [Point<2, f64>; 3] = points![(1.0, 1.0), (2.0, 2.0), (3.0, 3.0)];
+/// assert_eq!(points2d.len(), 3);
+/// assert_eq!(points2d[0].vec.len(), 2);
+///
+/// // 4d array
+/// let points4d: [Point<4, f64>; 2] = points![(1.0, 2.0, 3.0, 4.0), (5.0, 6.0, 7.0, 8.0)];
+/// assert_eq!(points4d.len(), 2);
+/// assert_eq!(points4d[0].vec.len(), 4);
+/// ```
 #[macro_export]
 macro_rules! points {
     ($(($($values:expr),+)),*) => {
-        &[$(Point { vec: [$($values),+] }),*]
+        [$(Point { vec: [$($values),+] }),*]
     };
 }
