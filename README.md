@@ -10,13 +10,13 @@ A Rust port of the Javascript [simplify-js](https://github.com/mourner/simplify-
 use simplify_polyline::*;
 
 fn main() {
-    let points = &[
-        Point { x: 0.0, y: 0.0 }, Point { x: 1.0, y: 1.0 },
-        Point { x: 2.0, y: 2.0 }, Point { x: 3.0, y: 3.0 },
-        Point { x: 4.0, y: 4.0 }
+    let points = [
+        Point { vec: [0.0, 0.0] }, Point { vec: [1.0, 1.0] },
+        Point { vec: [2.0, 2.0] }, Point { vec: [3.0, 3.0] },
+        Point { vec: [4.0, 4.0] }
     ];
     // alternatively, use the point! macro
-    let points = &[
+    let points = [
         point!(0.0, 0.0), point!(1.0, 1.0), point!(2.0, 2.0),
         point!(3.0, 3.0), point!(4.0, 4.0)
     ];
@@ -24,9 +24,9 @@ fn main() {
     let points = points![(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)];
 
     // low-quality simplification (fast)
-    let new_points = simplify(points, 1.0, false);
+    let new_points = simplify(&points, 1.0, false);
     // low-quality simplification (slower)
-    let new_points = simplify(points, 1.0, true);
+    let new_points = simplify(&points, 1.0, true);
 }
 ```
 
