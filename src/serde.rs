@@ -1,24 +1,14 @@
 //! # `serde` support
 //!
-//! Support is somewhat limited, only 2D, 3D, and 4D point types are available at the moment.
-//! This will eagerly parse any map-like object with an `x` and `y` property (+ `z` for 3D, + `w` for 4D) that
+//! Support is somewhat limited, only 2D point types are available at the moment.
+//!
+//! This will eagerly parse any map-like object with an `x` and `y` property that
 //! holds a deserialize-able number type, even if other keys may be present in the map.
 //!
 //! Much of this implementation was designed around JSON input data. If assumptions made by that don't hold for
 //! your particular input and this fails when it shouldn't, open an issue.
 //!
 //! ## Example (JSON)
-//!
-//! This is just for demonstration -- mixed size points are supported for deserialization, but you cannot simplify
-//! a polyline with points of different dimentions.
-//!
-//! ```json
-//! [
-//!     { "x": 5, "y": 5 },
-//!     { "x": 5, "y": 5, "z": 5 },
-//!     { "x": 5, "y": 5, "z": 5, "w": 6 },
-//! ]
-//! ```
 //!
 //! Using `serde_json`:
 //!

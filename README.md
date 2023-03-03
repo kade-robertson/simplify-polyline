@@ -33,6 +33,7 @@ fn main() {
 ## Features
 
 - `serde`, optional, defaults to off. Allows serializing/deserializing points.
+  - Note, this only works for some dimensions, and some formats. Read the docs for more info.
 
 ## Performance
 
@@ -41,13 +42,13 @@ Measurements taken with an AMD Ryzen 7 5800x, in Pop!\_OS 22.04.
 | Test Case                               | simplify-polyline | simplify-js |
 | --------------------------------------- | ----------------: | ----------: |
 | 1118 Points, Low Quality, Tolerance 1   |         16.584 μs |   52.907 μs |
-| 1118 Points, High Quality, Tolerance 1  |         30.910 μs |   85.653 μs |
+| 1118 Points, High Quality, Tolerance 1  |         26.989 μs |   85.653 μs |
 | 1118 Points, Low Quality, Tolerance 5   |          3.987 μs |   12.840 μs |
-| 1118 Points, High Quality, Tolerance 5  |         23.215 μs |   57.901 μs |
+| 1118 Points, High Quality, Tolerance 5  |         19.497 μs |   57.901 μs |
 | 73752 Points, Low Quality, Tolerance 1  |         82.251 μs |  273.075 μs |
-| 73752 Points, High Quality, Tolerance 1 |       1974.004 μs | 5376.344 μs |
+| 73752 Points, High Quality, Tolerance 1 |       1933.700 μs | 5376.344 μs |
 | 73752 Points, Low Quality, Tolerance 5  |         54.150 μs |  181.554 μs |
-| 73752 Points, High Quality, Tolerance 5 |       1460.742 μs | 3921.569 μs |
+| 73752 Points, High Quality, Tolerance 5 |       1458.900 μs | 3921.569 μs |
 
 ## Contributing
 
