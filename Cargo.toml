@@ -19,6 +19,8 @@ serde_json = "=1.0.107"
 criterion = "=0.4.0"
 regex = "=1.9.6"
 memchr = "=2.6.2"
+rayon-core = "=1.11.0"
+os_str_bytes = "=6.5.1"
 
 [features]
 serde = ["dep:serde"]
