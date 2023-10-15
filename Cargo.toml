@@ -17,6 +17,8 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 [dev-dependencies]
 serde_json = "=1.0.107"
 criterion = "=0.4.0"
+regex = "=1.9.6"
+memchr = "=2.6.2"
 
 [features]
 serde = ["dep:serde"]
