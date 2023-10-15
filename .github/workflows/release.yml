@@ -3,6 +3,10 @@ on:
     types:
       - published
 
+env:
+  SCCACHE_GHA_ENABLED: true
+  RUSTC_WRAPPER: sccache
+
 name: release
 jobs:
   create-release:
@@ -13,11 +17,8 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: 'rust'
-          shared-key: 'cache'
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Publish
         uses: katyo/publish-crates@v1

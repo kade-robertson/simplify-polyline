@@ -6,7 +6,7 @@ homepage = "https://github.com/kade-robertson/simplify-polyline"
 repository = "https://github.com/kade-robertson/simplify-polyline"
 license = "MIT"
 edition = "2021"
-rust-version = "1.60"
+rust-version = "1.63"
 keywords = ["simplify", "polyline", "geometry", "simplify-js"]
 categories = ["mathematics", "graphics"]
 
