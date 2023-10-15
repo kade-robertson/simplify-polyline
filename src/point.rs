@@ -153,23 +153,32 @@ impl<const D: usize, T: ExtendedNumOps> Add<Point<D, T>> for Point<D, T> {
 
     #[inline(always)]
     fn add(self, rhs: Point<D, T>) -> Self::Output {
+        let mut new_values = [T::zero(); D];
         match D {
             2 => {
-                let mut new_values = [T::zero(); D];
                 new_values[0] = self.vec[0] + rhs.vec[0];
                 new_values[1] = self.vec[1] + rhs.vec[1];
-                Point { vec: new_values }
+            }
+            3 => {
+                new_values[0] = self.vec[0] + rhs.vec[0];
+                new_values[1] = self.vec[1] + rhs.vec[1];
+                new_values[2] = self.vec[2] + rhs.vec[2];
+            }
+            4 => {
+                new_values[0] = self.vec[0] + rhs.vec[0];
+                new_values[1] = self.vec[1] + rhs.vec[1];
+                new_values[2] = self.vec[2] + rhs.vec[2];
+                new_values[3] = self.vec[3] + rhs.vec[3];
             }
             _ => {
                 let mut i = 0usize;
-                let mut new_values = [T::zero(); D];
                 while i < self.vec.len() {
                     new_values[i] = self.vec[i] + rhs.vec[i];
                     i += 1;
                 }
-                Point { vec: new_values }
             }
         }
+        Point { vec: new_values }
     }
 }
 impl_ref_op!(impl Add, add for Point<D, T>, Point<D, T>);
@@ -205,23 +214,32 @@ impl<const D: usize, T: ExtendedNumOps> Mul<Point<D, T>> for Point<D, T> {
 
     #[inline(always)]
     fn mul(self, rhs: Point<D, T>) -> Self::Output {
+        let mut new_values = [T::zero(); D];
         match D {
             2 => {
-                let mut new_values = [T::zero(); D];
                 new_values[0] = self.vec[0] * rhs.vec[0];
                 new_values[1] = self.vec[1] * rhs.vec[1];
-                Point { vec: new_values }
+            }
+            3 => {
+                new_values[0] = self.vec[0] * rhs.vec[0];
+                new_values[1] = self.vec[1] * rhs.vec[1];
+                new_values[2] = self.vec[2] * rhs.vec[2];
+            }
+            4 => {
+                new_values[0] = self.vec[0] * rhs.vec[0];
+                new_values[1] = self.vec[1] * rhs.vec[1];
+                new_values[2] = self.vec[2] * rhs.vec[2];
+                new_values[3] = self.vec[3] * rhs.vec[3];
             }
             _ => {
                 let mut i = 0usize;
-                let mut new_values = [T::zero(); D];
                 while i < self.vec.len() {
                     new_values[i] = self.vec[i] * rhs.vec[i];
                     i += 1;
                 }
-                Point { vec: new_values }
             }
         }
+        Point { vec: new_values }
     }
 }
 impl_ref_op!(impl Mul, mul for Point<D, T>, Point<D, T>);
@@ -231,12 +249,22 @@ impl<const D: usize, T: ExtendedNumOps> Mul<T> for Point<D, T> {
 
     #[inline(always)]
     fn mul(self, rhs: T) -> Self::Output {
+        let mut new_values = [T::zero(); D];
         match D {
             2 => {
-                let mut new_values = [T::zero(); D];
                 new_values[0] = self.vec[0] * rhs;
                 new_values[1] = self.vec[1] * rhs;
-                Point { vec: new_values }
+            }
+            3 => {
+                new_values[0] = self.vec[0] * rhs;
+                new_values[1] = self.vec[1] * rhs;
+                new_values[2] = self.vec[2] * rhs;
+            }
+            4 => {
+                new_values[0] = self.vec[0] * rhs;
+                new_values[1] = self.vec[1] * rhs;
+                new_values[2] = self.vec[2] * rhs;
+                new_values[3] = self.vec[3] * rhs;
             }
             _ => {
                 let mut i = 0usize;
@@ -245,9 +273,9 @@ impl<const D: usize, T: ExtendedNumOps> Mul<T> for Point<D, T> {
                     new_values[i] = self.vec[i] * rhs;
                     i += 1;
                 }
-                Point { vec: new_values }
             }
         }
+        Point { vec: new_values }
     }
 }
 impl_ref_op!(impl Mul, mul for Point<D, T>, T);
