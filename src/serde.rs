@@ -1,12 +1,14 @@
 //! # `serde` support
 //!
-//! Support is somewhat limited, only 2D point types are available at the moment.
+//! Support is limited to 2D and 3D point types are available at the moment.
 //!
-//! This will eagerly parse any map-like object with an `x` and `y` property that
-//! holds a deserialize-able number type, even if other keys may be present in the map.
+//! This will eagerly parse any map-like object with an `x` and `y` property
+//! (and a `z` property for 3D points) that holds a deserialize-able number type,
+//! even if other keys may be present in the map.
 //!
-//! Much of this implementation was designed around JSON input data. If assumptions made by that don't hold for
-//! your particular input and this fails when it shouldn't, open an issue.
+//! Much of this implementation was designed around JSON input data. If
+//! assumptions made by that don't hold for your particular input and this fails
+//! when it shouldn't, open an issue.
 //!
 //! ## Example (JSON)
 //!
@@ -18,6 +20,9 @@
 //!
 //! let point_json = r#"{ "x": 5, "y": 5 }"#;
 //! let point: Point<2, f64> = serde_json::from_str(point_json).unwrap();
+//!
+//! let point3d_json = r#"{ "x": 5, "y": 5, "z": 5 }"#;
+//! let point3d: Point<3, f64> = serde_json::from_str(point3d_json).unwrap();
 //! ```
 
 use crate::{ExtendedNumOps, Point};
